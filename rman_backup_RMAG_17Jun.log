@@ -1,0 +1,156 @@
+
+Recovery Manager: Release 12.2.0.1.0 - Production on Wed Jun 17 12:14:52 2020
+
+Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.
+
+RMAN> 
+connected to target database: RMAG (DBID=841320234)
+
+RMAN> 2> 3> 4> 5> 6> 7> 8> 9> 10> 11> 12> 13> 14> 
+using target database control file instead of recovery catalog
+allocated channel: t1
+channel t1: SID=761 device type=DISK
+
+allocated channel: t2
+channel t2: SID=887 device type=DISK
+
+allocated channel: t3
+channel t3: SID=952 device type=DISK
+
+allocated channel: t4
+channel t4: SID=1011 device type=DISK
+
+Starting backup at 17-JUN-20
+channel t1: starting compressed full datafile backup set
+channel t1: specifying datafile(s) in backup set
+input datafile file number=00009 name=+DATA/RMAG/DATAFILE/data_ps.274.1011346603
+input datafile file number=00016 name=+DATA/RMAG/DATAFILE/kc_webstage_data.287.1011347121
+input datafile file number=00002 name=+DATA/RMAG/DATAFILE/sysaux.289.1011347195
+input datafile file number=00001 name=+DATA/RMAG/DATAFILE/system.288.1011347149
+channel t1: starting piece 1 at 17-JUN-20
+channel t2: starting compressed full datafile backup set
+channel t2: specifying datafile(s) in backup set
+input datafile file number=00007 name=+DATA/RMAG/DATAFILE/data_historical.275.1011346603
+input datafile file number=00008 name=+DATA/RMAG/DATAFILE/data_mprocess.282.1011346715
+input datafile file number=00013 name=+DATA/RMAG/DATAFILE/index_dimfact.285.1011347043
+input datafile file number=00014 name=+DATA/RMAG/DATAFILE/index_mprocess.286.1011347079
+channel t2: starting piece 1 at 17-JUN-20
+channel t3: starting compressed full datafile backup set
+channel t3: specifying datafile(s) in backup set
+input datafile file number=00010 name=+DATA/RMAG/DATAFILE/data_rma.276.1011346603
+input datafile file number=00015 name=+DATA/RMAG/DATAFILE/index_rma.280.1011346603
+input datafile file number=00006 name=+DATA/RMAG/DATAFILE/data_dimfact.279.1011346603
+input datafile file number=00012 name=+DATA/RMAG/DATAFILE/index_data.284.1011346789
+channel t3: starting piece 1 at 17-JUN-20
+channel t4: starting compressed full datafile backup set
+channel t4: specifying datafile(s) in backup set
+input datafile file number=00003 name=+DATA/RMAG/DATAFILE/undotbs1.277.1011346603
+input datafile file number=00004 name=+DATA/RMAG/DATAFILE/users.278.1011346603
+input datafile file number=00005 name=+DATA/RMAG/DATAFILE/data_boxi.281.1011346603
+input datafile file number=00011 name=+DATA/RMAG/DATAFILE/index_boxi.283.1011346765
+channel t4: starting piece 1 at 17-JUN-20
+channel t4: finished piece 1 at 17-JUN-20
+piece handle=/infshare/oracle/exports/RMAG_HOT/RMAG_1043324101_1_12470_1_5mv2vn65.dbf tag=TAG20200617T121500 comment=NONE
+channel t4: backup set complete, elapsed time: 00:00:25
+channel t2: finished piece 1 at 17-JUN-20
+piece handle=/infshare/oracle/exports/RMAG_HOT/RMAG_1043324101_1_12468_1_5kv2vn65.dbf tag=TAG20200617T121500 comment=NONE
+channel t2: backup set complete, elapsed time: 00:07:35
+channel t3: finished piece 1 at 17-JUN-20
+piece handle=/infshare/oracle/exports/RMAG_HOT/RMAG_1043324101_1_12469_1_5lv2vn65.dbf tag=TAG20200617T121500 comment=NONE
+channel t3: backup set complete, elapsed time: 00:08:35
+channel t1: finished piece 1 at 17-JUN-20
+piece handle=/infshare/oracle/exports/RMAG_HOT/RMAG_1043324101_1_12467_1_5jv2vn65.dbf tag=TAG20200617T121500 comment=NONE
+channel t1: backup set complete, elapsed time: 00:14:15
+Finished backup at 17-JUN-20
+
+Starting backup at 17-JUN-20
+channel t1: starting full datafile backup set
+channel t1: specifying datafile(s) in backup set
+including current control file in backup set
+channel t1: starting piece 1 at 17-JUN-20
+channel t1: finished piece 1 at 17-JUN-20
+piece handle=/infshare/oracle/exports/RMAG_HOT/RMAG_1043324959_1_12471_1_5nv2vo0v.ctl tag=TAG20200617T122919 comment=NONE
+channel t1: backup set complete, elapsed time: 00:00:01
+Finished backup at 17-JUN-20
+
+Starting Control File and SPFILE Autobackup at 17-JUN-20
+piece handle=+FRA/RMAG/AUTOBACKUP/2020_06_17/s_1043324961.1824.1043324963 comment=NONE
+Finished Control File and SPFILE Autobackup at 17-JUN-20
+
+sql statement: alter system archive log current
+
+Starting backup at 17-JUN-20
+current log archived
+channel t1: starting compressed archived log backup set
+channel t1: specifying archived log(s) in backup set
+input archived log thread=1 sequence=7894 RECID=7894 STAMP=1043049055
+input archived log thread=1 sequence=7895 RECID=7895 STAMP=1043049437
+input archived log thread=1 sequence=7896 RECID=7896 STAMP=1043064870
+input archived log thread=1 sequence=7897 RECID=7897 STAMP=1043086491
+input archived log thread=1 sequence=7898 RECID=7898 STAMP=1043108084
+input archived log thread=1 sequence=7899 RECID=7899 STAMP=1043114800
+input archived log thread=1 sequence=7900 RECID=7900 STAMP=1043114918
+input archived log thread=1 sequence=7901 RECID=7901 STAMP=1043115808
+channel t1: starting piece 1 at 17-JUN-20
+channel t2: starting compressed archived log backup set
+channel t2: specifying archived log(s) in backup set
+input archived log thread=1 sequence=7910 RECID=7910 STAMP=1043202268
+input archived log thread=1 sequence=7911 RECID=7911 STAMP=1043216108
+input archived log thread=1 sequence=7912 RECID=7912 STAMP=1043221813
+input archived log thread=1 sequence=7913 RECID=7913 STAMP=1043222249
+input archived log thread=1 sequence=7914 RECID=7914 STAMP=1043237666
+input archived log thread=1 sequence=7915 RECID=7915 STAMP=1043258737
+input archived log thread=1 sequence=7916 RECID=7916 STAMP=1043280329
+input archived log thread=1 sequence=7917 RECID=7917 STAMP=1043285494
+channel t2: starting piece 1 at 17-JUN-20
+channel t3: starting compressed archived log backup set
+channel t3: specifying archived log(s) in backup set
+input archived log thread=1 sequence=7902 RECID=7902 STAMP=1043129694
+input archived log thread=1 sequence=7903 RECID=7903 STAMP=1043135424
+input archived log thread=1 sequence=7904 RECID=7904 STAMP=1043135845
+input archived log thread=1 sequence=7905 RECID=7905 STAMP=1043151272
+input archived log thread=1 sequence=7906 RECID=7906 STAMP=1043172879
+input archived log thread=1 sequence=7907 RECID=7907 STAMP=1043194463
+input archived log thread=1 sequence=7908 RECID=7908 STAMP=1043201267
+input archived log thread=1 sequence=7909 RECID=7909 STAMP=1043201607
+channel t3: starting piece 1 at 17-JUN-20
+channel t4: starting compressed archived log backup set
+channel t4: specifying archived log(s) in backup set
+input archived log thread=1 sequence=7918 RECID=7918 STAMP=1043285680
+input archived log thread=1 sequence=7919 RECID=7919 STAMP=1043288726
+input archived log thread=1 sequence=7920 RECID=7920 STAMP=1043301924
+input archived log thread=1 sequence=7921 RECID=7921 STAMP=1043307735
+input archived log thread=1 sequence=7922 RECID=7922 STAMP=1043308655
+input archived log thread=1 sequence=7923 RECID=7923 STAMP=1043323525
+input archived log thread=1 sequence=7924 RECID=7924 STAMP=1043324963
+input archived log thread=1 sequence=7925 RECID=7925 STAMP=1043324963
+channel t4: starting piece 1 at 17-JUN-20
+channel t1: finished piece 1 at 17-JUN-20
+piece handle=/infshare/oracle/exports/RMAG_HOT/RMAG_1043324964_1_12473_1_5pv2vo14.arc tag=TAG20200617T122923 comment=NONE
+channel t1: backup set complete, elapsed time: 00:00:25
+channel t2: finished piece 1 at 17-JUN-20
+piece handle=/infshare/oracle/exports/RMAG_HOT/RMAG_1043324964_1_12474_1_5qv2vo14.arc tag=TAG20200617T122923 comment=NONE
+channel t2: backup set complete, elapsed time: 00:00:25
+channel t3: finished piece 1 at 17-JUN-20
+piece handle=/infshare/oracle/exports/RMAG_HOT/RMAG_1043324964_1_12475_1_5rv2vo14.arc tag=TAG20200617T122923 comment=NONE
+channel t3: backup set complete, elapsed time: 00:00:25
+channel t4: finished piece 1 at 17-JUN-20
+piece handle=/infshare/oracle/exports/RMAG_HOT/RMAG_1043324964_1_12476_1_5sv2vo14.arc tag=TAG20200617T122923 comment=NONE
+channel t4: backup set complete, elapsed time: 00:00:25
+Finished backup at 17-JUN-20
+
+Starting Control File and SPFILE Autobackup at 17-JUN-20
+piece handle=+FRA/RMAG/AUTOBACKUP/2020_06_17/s_1043324989.1548.1043324991 comment=NONE
+Finished Control File and SPFILE Autobackup at 17-JUN-20
+
+released channel: t1
+
+released channel: t2
+
+released channel: t3
+
+released channel: t4
+
+RMAN> 
+
+Recovery Manager complete.

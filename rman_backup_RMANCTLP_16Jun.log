@@ -1,0 +1,131 @@
+
+Recovery Manager: Release 12.2.0.1.0 - Production on Tue Jun 16 18:01:30 2020
+
+Copyright (c) 1982, 2017, Oracle and/or its affiliates.  All rights reserved.
+
+RMAN> 
+connected to target database: RMANCTLP (DBID=2076661792)
+
+RMAN> 2> 3> 4> 5> 6> 7> 8> 9> 10> 11> 12> 13> 14> 
+using target database control file instead of recovery catalog
+allocated channel: t1
+channel t1: SID=770 device type=DISK
+
+allocated channel: t2
+channel t2: SID=867 device type=DISK
+
+allocated channel: t3
+channel t3: SID=915 device type=DISK
+
+allocated channel: t4
+channel t4: SID=963 device type=DISK
+
+Starting backup at 16-JUN-20
+channel t1: starting compressed full datafile backup set
+channel t1: specifying datafile(s) in backup set
+input datafile file number=00002 name=+DATA/RMANCTLP/DATAFILE/sysaux.324.1020761823
+channel t1: starting piece 1 at 16-JUN-20
+channel t2: starting compressed full datafile backup set
+channel t2: specifying datafile(s) in backup set
+input datafile file number=00004 name=+DATA/RMANCTLP/DATAFILE/users.323.1020761823
+input datafile file number=00003 name=+DATA/RMANCTLP/DATAFILE/undotbs.326.1020761825
+channel t2: starting piece 1 at 16-JUN-20
+channel t3: starting compressed full datafile backup set
+channel t3: specifying datafile(s) in backup set
+input datafile file number=00005 name=+DATA/RMANCTLP/DATAFILE/rman_ctlg.322.1020761823
+input datafile file number=00001 name=+DATA/RMANCTLP/DATAFILE/system.325.1020761825
+channel t3: starting piece 1 at 16-JUN-20
+channel t2: finished piece 1 at 16-JUN-20
+piece handle=/infshare/oracle/exports/RMANCTLP/RMANCTLP_1043258498_1_9229_1_0dv2tn42.dbf tag=TAG20200616T180137 comment=NONE
+channel t2: backup set complete, elapsed time: 00:00:01
+channel t3: finished piece 1 at 16-JUN-20
+piece handle=/infshare/oracle/exports/RMANCTLP/RMANCTLP_1043258498_1_9230_1_0ev2tn42.dbf tag=TAG20200616T180137 comment=NONE
+channel t3: backup set complete, elapsed time: 00:00:35
+channel t1: finished piece 1 at 16-JUN-20
+piece handle=/infshare/oracle/exports/RMANCTLP/RMANCTLP_1043258498_1_9228_1_0cv2tn42.dbf tag=TAG20200616T180137 comment=NONE
+channel t1: backup set complete, elapsed time: 00:02:35
+Finished backup at 16-JUN-20
+
+Starting backup at 16-JUN-20
+channel t1: starting full datafile backup set
+channel t1: specifying datafile(s) in backup set
+including current control file in backup set
+channel t1: starting piece 1 at 16-JUN-20
+channel t1: finished piece 1 at 16-JUN-20
+piece handle=/infshare/oracle/exports/RMANCTLP/RMANCTLP_1043258654_1_9231_1_0fv2tn8u.ctl tag=TAG20200616T180414 comment=NONE
+channel t1: backup set complete, elapsed time: 00:00:01
+Finished backup at 16-JUN-20
+
+Starting Control File and SPFILE Autobackup at 16-JUN-20
+piece handle=+FRA/RMANCTLP/AUTOBACKUP/2020_06_16/s_1043258656.615.1043258657 comment=NONE
+Finished Control File and SPFILE Autobackup at 16-JUN-20
+
+sql statement: alter system archive log current
+
+Starting backup at 16-JUN-20
+current log archived
+channel t1: starting compressed archived log backup set
+channel t1: specifying archived log(s) in backup set
+input archived log thread=1 sequence=1483 RECID=1483 STAMP=1043021528
+input archived log thread=1 sequence=1484 RECID=1484 STAMP=1043042411
+input archived log thread=1 sequence=1485 RECID=1485 STAMP=1043043132
+input archived log thread=1 sequence=1486 RECID=1486 STAMP=1043064717
+input archived log thread=1 sequence=1487 RECID=1487 STAMP=1043086340
+input archived log thread=1 sequence=1488 RECID=1488 STAMP=1043104994
+channel t1: starting piece 1 at 16-JUN-20
+channel t2: starting compressed archived log backup set
+channel t2: specifying archived log(s) in backup set
+input archived log thread=1 sequence=1477 RECID=1477 STAMP=1042958413
+input archived log thread=1 sequence=1478 RECID=1478 STAMP=1042958587
+input archived log thread=1 sequence=1479 RECID=1479 STAMP=1042978315
+input archived log thread=1 sequence=1480 RECID=1480 STAMP=1042999929
+input archived log thread=1 sequence=1481 RECID=1481 STAMP=1043015351
+input archived log thread=1 sequence=1482 RECID=1482 STAMP=1043021410
+channel t2: starting piece 1 at 16-JUN-20
+channel t3: starting compressed archived log backup set
+channel t3: specifying archived log(s) in backup set
+input archived log thread=1 sequence=1489 RECID=1489 STAMP=1043107928
+input archived log thread=1 sequence=1490 RECID=1490 STAMP=1043124379
+input archived log thread=1 sequence=1491 RECID=1491 STAMP=1043129533
+input archived log thread=1 sequence=1492 RECID=1492 STAMP=1043151121
+input archived log thread=1 sequence=1493 RECID=1493 STAMP=1043172723
+input archived log thread=1 sequence=1494 RECID=1494 STAMP=1043190485
+channel t3: starting piece 1 at 16-JUN-20
+channel t4: starting compressed archived log backup set
+channel t4: specifying archived log(s) in backup set
+input archived log thread=1 sequence=1495 RECID=1495 STAMP=1043194312
+input archived log thread=1 sequence=1496 RECID=1496 STAMP=1043210783
+input archived log thread=1 sequence=1497 RECID=1497 STAMP=1043215956
+input archived log thread=1 sequence=1498 RECID=1498 STAMP=1043237515
+input archived log thread=1 sequence=1499 RECID=1499 STAMP=1043258658
+input archived log thread=1 sequence=1500 RECID=1500 STAMP=1043258658
+channel t4: starting piece 1 at 16-JUN-20
+channel t3: finished piece 1 at 16-JUN-20
+piece handle=/infshare/oracle/exports/RMANCTLP/RMANCTLP_1043258659_1_9235_1_0jv2tn93.arc tag=TAG20200616T180418 comment=NONE
+channel t3: backup set complete, elapsed time: 00:00:35
+channel t4: finished piece 1 at 16-JUN-20
+piece handle=/infshare/oracle/exports/RMANCTLP/RMANCTLP_1043258659_1_9236_1_0kv2tn93.arc tag=TAG20200616T180418 comment=NONE
+channel t4: backup set complete, elapsed time: 00:00:35
+channel t1: finished piece 1 at 16-JUN-20
+piece handle=/infshare/oracle/exports/RMANCTLP/RMANCTLP_1043258658_1_9233_1_0hv2tn92.arc tag=TAG20200616T180418 comment=NONE
+channel t1: backup set complete, elapsed time: 00:00:45
+channel t2: finished piece 1 at 16-JUN-20
+piece handle=/infshare/oracle/exports/RMANCTLP/RMANCTLP_1043258659_1_9234_1_0iv2tn93.arc tag=TAG20200616T180418 comment=NONE
+channel t2: backup set complete, elapsed time: 00:00:45
+Finished backup at 16-JUN-20
+
+Starting Control File and SPFILE Autobackup at 16-JUN-20
+piece handle=+FRA/RMANCTLP/AUTOBACKUP/2020_06_16/s_1043258725.1969.1043258725 comment=NONE
+Finished Control File and SPFILE Autobackup at 16-JUN-20
+
+released channel: t1
+
+released channel: t2
+
+released channel: t3
+
+released channel: t4
+
+RMAN> 
+
+Recovery Manager complete.

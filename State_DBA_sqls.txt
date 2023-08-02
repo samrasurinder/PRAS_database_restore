@@ -1,0 +1,230 @@
+GEMS = Global Employee Management System
+EOD= Entrance of Duty
+OPS = Overseas Personnel System
+PRAS = Personnel Reporting and Statistics
+
+***********
+Unmount CIFS
+==============
+umount -t -a cifs
+
+****************
+Rotate Log:-
+00 06 * * * /u02/app/oracle/scripts/maintenance/rotatelogs.bash >> /u02/app/oracle/scripts/maintenance/logs/rotatelogs_$(date +\%m\%d\%y).log 2>&1
+**********************************
+** Kill all Linux processes related to a script.
+pkill -f /home/oracle/ss/job-locked/db-accountcheck.bash
+********************************************************
+alter session set nls_date_format = 'DD-MON-YYYY HH24:MI:SS';
+
+select table_name,LAST_ANALYZED from dba_tables where owner='DW'  and LAST_ANALYZED > sysdate -1 order by 2 desc;
+***********************************
+-- Create a Linux user on VMs
+useradd samras
+passwd samras
+usermod -aG wheel samras
+**************************************
+EZ connect
+
+export pw=I9\$Tat4D
+echo $pw
+I9$Tat4D
+sqlplus sysadm/$pw@10.70.4.87:1521/EODUAT.hr.state.sbu 
+***************************************
+** Datapump 2 tables
+create directory TEMPD as '/infshare/oracle/export/TEMP';
+expdp \'/ as sysdba\' directory=TEMPD TABLES=MASK.CHOSEN_ONE, MASK.CHOSEN_ONE_POSITION dumpfile=${ORACLE_SID}_2tables_BKP.dmp logfile=${ORACLE_SID}_2tables_BKPlog.log
+impdp \'/ as sysdba\' directory=TEMPD REMAP_SCHEMA=MASK:MASK TABLES=MASK.CHOSEN_ONE,MASK.CHOSEN_ONE_POSITION DUMPFILE=PRDMASK1_2tables.dmp logfile=${ORACLE_SID}_IMPDP_2tables.log
+*******************************************************************************
+***Clearstate OEM Agent***
+cd /u02/app/oracle/agent12c/agent_inst/sysman/emd/state
+
+[oracle@hrewoel30 state]$ rm -rf *
+
+[oracle@hrewoel30 bin]$ ./emctl clearstate agent
+Oracle Enterprise Manager Cloud Control 12c Release 5
+Copyright (c) 1996, 2015 Oracle Corporation.  All rights reserved.
+EMD clearstate completed successfully
+
+[oracle@hrewoel30 bin]$ ./emctl start agent
+Oracle Enterprise Manager Cloud Control 12c Release 5
+Copyright (c) 1996, 2015 Oracle Corporation.  All rights reserved.
+Starting agent ................... started.
+
+[oracle@hrewoel30 bin]$ ./emctl status agent
+--
+https://jhdba.wordpress.com/tag/clearstate/
+*******************************************
+-- Find database SCN
+column scn format 99999999999999999999;
+set pagesize 999
+alter session set nls_date_format = 'DD-MON-YYYY HH24:MI:SS';
+select TIME_DP,SCN,SCN_WRP from sys.smon_scn_time where TIME_DP > (sysdate - 60) order by 1 desc;
+
+select TIME_DP,SCN,SCN_WRP from sys.smon_scn_time where rownum < 100 order by 1 desc;
+****************************************************************************
+**EZ Connect ****
+CONNECT username/password@[//]host[:port][/service_name]
+
+SQL> conn system/TSTNBrrMNdb629$@HRVLTSTDB7601.hr.state.sbu:1521/OPSSTG2.HR.STATE.SBU
+Connected.
+
+TNS_ADMIN=\\esocomsntap101\hrpublic$\Public\Tnsnames
+
+set TNS_ADMIN=c:\Temp\tnsnames.ora
+***************************************************************************
+
+-- State DBA sqls--
+
+set linesize 100
+set lines 100
+set TERMOUT ON
+set FEEDBACK ON
+col database_schema format a40
+select substr(global_name,1,30) || ' ('||user||')' database_schema from global_name;
+**************************************
+**INVALID Objects**
+set line 200
+col OBJECT_NAME for a65
+set pagesize 99
+select instance_name,host_name from v$instance;
+select OWNER,OBJECT_NAME,OBJECT_TYPE,STATUS from dba_INVALID_objects order by 1,3,2;
+*********************************************
+-------------------------------------------------------------------------------
+https://www.youtube.com/watch?v=T-rCbe1MMG4&list=PLL_LQvNX4xKzVcg_GoRzjeM_veo8CI15A   --> for 12c installation
+--------------------------
+Select wrl_parameter,status from v$encryption_wallet;
+alter system set encryption key identified by “password’;
+alter system set wallet close  identified by ‘password’;
+alter system set wallet open identified by “password”;
+Auto login:-
+[oracle@hrdmzuatoel01 EODUAT]$ orapki wallet create -wallet /u02/app/oracle/WALLETS/EODUAT -auto_login
+Oracle PKI Tool Release 20.0.0.0.0 - Production
+Version 21.0.0.0.0
+Copyright (c) 2004, 2019, Oracle and/or its affiliates. All rights reserved.
+
+Enter wallet password:
+Operation is successfully completed.
+[oracle@hrdmzuatoel01 EODUAT]$ pwd
+/u02/app/oracle/WALLETS/EODUAT
+[oracle@hrdmzuatoel01 EODUAT]$ 
+**************************************************************************
+**FRA
+
+select 
+SPACE_LIMIT/1024/1024 SPACE_LIMIT_MB,
+SPACE_USED/1024/1024 SPACE_USED_MB,
+SPACE_RECLAIMABLE/1024/1024 SPACE_RECLAIMABLE_MB,
+(SPACE_USED/SPACE_LIMIT) * 100 "% Used",
+(SPACE_LIMIT - SPACE_USED)/1024/1024 "Free Space_MB"
+from v$recovery_file_dest;
+***********************************************************
+Find SCN
+col scn for 99999999999999999999;
+select timestamp_to_scn(to_timestamp('05/20/2019 00:00:00','MM/DD/YYYY HH24:MI:SS')) as scn from dual;
+****************************************************
+** Locked users**
+set line 120
+select USERNAME,ACCOUNT_STATUS,LOCK_DATE from dba_users where ACCOUNT_STATUS <> 'OPEN' and LOCK_DATE> sysdate-365 order by 3 desc;
+
+**INVALID Objects:-
+set line 220
+set pagesize 99
+col OWNER for a30
+col OBJECT_NAME for a67
+select OWNER,OBJECT_NAME,OBJECT_TYPE from dba_invalid_objects order by owner;
+**************
+col PROFILE for a45
+col LIMIT for a45
+select * from dba_profiles where profile='HR_PROFILE_USER';
+
+********
+*** egrep ***
+ssh oracle@hrewoel06 df -h |egrep '/u0|/tmp'
+ssh oracle@hrewoel06 df -h |egrep '/u0|/tmp'
+ssh oracle@hrewoel06 df -h |egrep '/u0|/tmp'
+*****************************************
+
+Gather Stats:-
+
+exec dbms_stats.gather_database_stats(options=> 'GATHER AUTO');
+*****************************
+Syntax for running command on a remote host:
+
+ssh [USER-NAME]@[REMOTE-HOST] [command or script]
+*******************
+
+Set TNS_ADMIN=C:\TEMP\tunde
+set SQLPATH=\\hrewwnonprdfs01\SystemOperation\Scripts\DBA\OracleUtilityScripts;\\hrewwnonprdfs01\SystemOperation\Scripts\DBA\OracleUtilityScripts\CD
+
+@invcomp    - compile
+@invstat    -- Invalid Objects
+@spf user <pwd>  -- Reset password to original password.
+
+***************************************************
+schema PRIVILEGES before droping it.
+set line 120
+set pagesize 999
+spool reeta_privs_before_refresh.sql
+select * from global_name;
+select 'grant '||PRIVILEGE||' to '||GRANTEE||';' from dba_sys_privs where grantee='REETA';
+select 'grant '||PRIVILEGE||' on '||OWNER||'.'||TABLE_NAME||' to '||GRANTEE||';' from  dba_tab_privs where grantee='REETA';
+spool off
+
+set line 130
+col PRIVILEGE for a20
+set pagesize 5000
+Privs_from_REETA.sql
+select 'GRANT '||PRIVILEGE||' ON '||OWNER||'.'||TABLE_NAME||' TO '||grantee||';' from dba_tab_privs where owner='REETA' order by privilege;
+
+
+set line 130
+col PRIVILEGE for a20
+set pagesize 5000
+Privs_for_REETA.sql
+select 'GRANT '||PRIVILEGE||' ON '||OWNER||'.'||TABLE_NAME||' TO '||grantee||';' from dba_tab_privs where grantee='REETA' order by privilege;
+
+***********************************
+*** KC_REFRESH Table update**
+UPDATE "TEST_USER1"."KC_REFRESH" SET BO_SOURCE = 'KC2', KC_REFRESH = 'KC1' WHERE ROWID = 'AAATmPAAEAAAAC0AAA' AND ORA_ROWSCN = '3700111922031'
+
+Commit Successful
+
+
+UPDATE "TEST_USER1"."KC_REFRESH" SET BO_SOURCE = 'KC1', KC_REFRESH = 'KC2' WHERE ROWID = 'AAATmPAAEAAAAC0AAA' AND ORA_ROWSCN = '3700112006794'
+
+Commit Successful
+***********************************************************************
+**RMAN Delete
+
+delete noprompt archivelog all completed before "sysdate-1";
+****************************************
+** 2nd Listener******************
+
+srvctl add listener -listener listener112 -endpoints "1341,1342,1345" -oraclehome /u01/app/oracle/product/12.1.0/db1 
+alter system set local_listener='(ADDRESS=(PROTOCOL=tcp)(HOST=127.0.0.1)(PORT=1521))' scope=both; 
+*******************************************************
+***MERGE Table***
+
+select * from sysadm.psoprdefn
+minus
+select * from sysadm.psoprdefn_20191107_bkp
+
+MERGE INTO sysadm.psoprdefn a 
+USING sysadm.psoprdefn_20191107_bkp b
+ON (a.oprid = b.oprid)
+    WHEN MATCHED THEN
+        UPDATE SET a.acctlock = b.acctlock;
+
+*************************************************************************
+REMAP_SCHEMA=PSHRADMN:SYSADM 
+DIRECTORY=DPUMP_GFACSLE 
+DUMPFILE=PSHRADMN_01.DMP,PSHRADMN_02.DMP,PSHRADMN_03.DMP,PSHRADMN_04.DMP,PSHRADMN_05.DMP,PSHRADMN_06.DMP,PSHRADMN_07.DMP,PSHRADMN_08.DMP,PSHRADMN_09.DMP,PSHRADMN_10.DMP,PSHRADMN_11.DMP,PSHRADMN_12.DMP,PSHRADMN_13.DMP,PSHRADMN_14.DMP,PSHRADMN_15.DMP,PSHRADMN_16.DMP
+LOGFILE=Impdp_OPSSTG1_02072019.log
+TABLE_EXISTS_ACTION=REPLACE
+PARALLEL=8
+*****************************************
+** Gather STATS :-
+ begin dbms_stats.gather_database_stats(options=> 'GATHER AUTO'); end;
+******************************************************
+

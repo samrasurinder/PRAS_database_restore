@@ -1,0 +1,304 @@
+
+Spooling started in log file: /u02/software/RMAG_HOT/restore.log
+
+Recovery Manager19.3.0.0.0
+
+RMAN> 2> 3> 4> 5> 
+allocated channel: a1
+channel a1: SID=758 device type=DISK
+
+allocated channel: a2
+channel a2: SID=821 device type=DISK
+
+Starting Duplicate Db at 17-JUN-20
+searching for database ID
+found backup of database ID 841320234
+
+contents of Memory Script:
+{
+   sql clone "create spfile from memory";
+}
+executing Memory Script
+
+sql statement: create spfile from memory
+
+contents of Memory Script:
+{
+   shutdown clone immediate;
+   startup clone nomount;
+}
+executing Memory Script
+
+Oracle instance shut down
+
+connected to auxiliary database (not started)
+Oracle instance started
+
+Total System Global Area    6459226248 bytes
+
+Fixed Size                     8910984 bytes
+Variable Size               1107296256 bytes
+Database Buffers            5301600256 bytes
+Redo Buffers                  41418752 bytes
+allocated channel: a1
+channel a1: SID=821 device type=DISK
+allocated channel: a2
+channel a2: SID=884 device type=DISK
+
+contents of Memory Script:
+{
+   sql clone "alter system set  control_files = 
+  ''+PRAS_DATA/RMAG/CONTROLFILE/current.270.1043333295'', ''+PRAS_FRA/RMAG/CONTROLFILE/current.283.1043333295'' comment=
+ ''Set by RMAN'' scope=spfile";
+   sql clone "alter system set  db_name = 
+ ''RMAG'' comment=
+ ''Modified by RMAN duplicate'' scope=spfile";
+   sql clone "alter system set  db_unique_name = 
+ ''RMAG'' comment=
+ ''Modified by RMAN duplicate'' scope=spfile";
+   shutdown clone immediate;
+   startup clone force nomount
+   restore clone primary controlfile from  '/u02/software/RMAG_HOT/RMAG_1043324959_1_12471_1_5nv2vo0v.ctl';
+   alter clone database mount;
+}
+executing Memory Script
+
+sql statement: alter system set  control_files =   ''+PRAS_DATA/RMAG/CONTROLFILE/current.270.1043333295'', ''+PRAS_FRA/RMAG/CONTROLFILE/current.283.1043333295'' comment= ''Set by RMAN'' scope=spfile
+
+sql statement: alter system set  db_name =  ''RMAG'' comment= ''Modified by RMAN duplicate'' scope=spfile
+
+sql statement: alter system set  db_unique_name =  ''RMAG'' comment= ''Modified by RMAN duplicate'' scope=spfile
+
+Oracle instance shut down
+
+Oracle instance started
+
+Total System Global Area    6459226248 bytes
+
+Fixed Size                     8910984 bytes
+Variable Size               1107296256 bytes
+Database Buffers            5301600256 bytes
+Redo Buffers                  41418752 bytes
+allocated channel: a1
+channel a1: SID=821 device type=DISK
+allocated channel: a2
+channel a2: SID=884 device type=DISK
+
+Starting restore at 17-JUN-20
+
+channel a2: skipped, AUTOBACKUP already found
+channel a1: restoring control file
+channel a1: restore complete, elapsed time: 00:00:09
+output file name=+PRAS_DATA/RMAG/CONTROLFILE/current.270.1043333295
+output file name=+PRAS_FRA/RMAG/CONTROLFILE/current.283.1043333295
+Finished restore at 17-JUN-20
+
+database mounted
+RMAN-05529: warning: DB_FILE_NAME_CONVERT resulted in invalid ASM names; names changed to disk group only.
+
+contents of Memory Script:
+{
+   set until scn  6965195805;
+   sql clone 'alter database flashback off';
+   set newname for datafile  1 to 
+ "+PRAS_DATA";
+   set newname for datafile  2 to 
+ "+PRAS_DATA";
+   set newname for datafile  3 to 
+ "+PRAS_DATA";
+   set newname for datafile  4 to 
+ "+PRAS_DATA";
+   set newname for datafile  5 to 
+ "+PRAS_DATA";
+   set newname for datafile  6 to 
+ "+PRAS_DATA";
+   set newname for datafile  7 to 
+ "+PRAS_DATA";
+   set newname for datafile  8 to 
+ "+PRAS_DATA";
+   set newname for datafile  9 to 
+ "+PRAS_DATA";
+   set newname for datafile  10 to 
+ "+PRAS_DATA";
+   set newname for datafile  11 to 
+ "+PRAS_DATA";
+   set newname for datafile  12 to 
+ "+PRAS_DATA";
+   set newname for datafile  13 to 
+ "+PRAS_DATA";
+   set newname for datafile  14 to 
+ "+PRAS_DATA";
+   set newname for datafile  15 to 
+ "+PRAS_DATA";
+   set newname for datafile  16 to 
+ "+PRAS_DATA";
+   restore
+   clone database
+   ;
+}
+executing Memory Script
+
+executing command: SET until clause
+
+sql statement: alter database flashback off
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+executing command: SET NEWNAME
+
+Starting restore at 17-JUN-20
+
+channel a1: starting datafile backup set restore
+channel a1: specifying datafile(s) to restore from backup set
+channel a1: restoring datafile 00001 to +PRAS_DATA
+channel a1: restoring datafile 00002 to +PRAS_DATA
+channel a1: restoring datafile 00009 to +PRAS_DATA
+channel a1: restoring datafile 00016 to +PRAS_DATA
+channel a1: reading from backup piece /u02/software/RMAG_HOT/RMAG_1043324101_1_12467_1_5jv2vn65.dbf
+channel a2: starting datafile backup set restore
+channel a2: specifying datafile(s) to restore from backup set
+channel a2: restoring datafile 00003 to +PRAS_DATA
+channel a2: restoring datafile 00004 to +PRAS_DATA
+channel a2: restoring datafile 00005 to +PRAS_DATA
+channel a2: restoring datafile 00011 to +PRAS_DATA
+channel a2: reading from backup piece /u02/software/RMAG_HOT/RMAG_1043324101_1_12470_1_5mv2vn65.dbf
+channel a2: piece handle=/u02/software/RMAG_HOT/RMAG_1043324101_1_12470_1_5mv2vn65.dbf tag=TAG20200617T121500
+channel a2: restored backup piece 1
+channel a2: restore complete, elapsed time: 00:01:25
+channel a2: starting datafile backup set restore
+channel a2: specifying datafile(s) to restore from backup set
+channel a2: restoring datafile 00006 to +PRAS_DATA
+channel a2: restoring datafile 00010 to +PRAS_DATA
+channel a2: restoring datafile 00012 to +PRAS_DATA
+channel a2: restoring datafile 00015 to +PRAS_DATA
+channel a2: reading from backup piece /u02/software/RMAG_HOT/RMAG_1043324101_1_12469_1_5lv2vn65.dbf
+channel a2: piece handle=/u02/software/RMAG_HOT/RMAG_1043324101_1_12469_1_5lv2vn65.dbf tag=TAG20200617T121500
+channel a2: restored backup piece 1
+channel a2: restore complete, elapsed time: 00:12:05
+channel a2: starting datafile backup set restore
+channel a2: specifying datafile(s) to restore from backup set
+channel a2: restoring datafile 00007 to +PRAS_DATA
+channel a2: restoring datafile 00008 to +PRAS_DATA
+channel a2: restoring datafile 00013 to +PRAS_DATA
+channel a2: restoring datafile 00014 to +PRAS_DATA
+channel a2: reading from backup piece /u02/software/RMAG_HOT/RMAG_1043324101_1_12468_1_5kv2vn65.dbf
+channel a1: piece handle=/u02/software/RMAG_HOT/RMAG_1043324101_1_12467_1_5jv2vn65.dbf tag=TAG20200617T121500
+channel a1: restored backup piece 1
+channel a1: restore complete, elapsed time: 00:19:36
+channel a2: piece handle=/u02/software/RMAG_HOT/RMAG_1043324101_1_12468_1_5kv2vn65.dbf tag=TAG20200617T121500
+channel a2: restored backup piece 1
+channel a2: restore complete, elapsed time: 00:10:36
+Finished restore at 17-JUN-20
+
+contents of Memory Script:
+{
+   switch clone datafile all;
+}
+executing Memory Script
+
+datafile 1 switched to datafile copy
+input datafile copy RECID=17 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/system.278.1043333361
+datafile 2 switched to datafile copy
+input datafile copy RECID=18 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/sysaux.276.1043333361
+datafile 3 switched to datafile copy
+input datafile copy RECID=19 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/undotbs1.272.1043333361
+datafile 4 switched to datafile copy
+input datafile copy RECID=20 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/users.273.1043333361
+datafile 5 switched to datafile copy
+input datafile copy RECID=21 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/data_boxi.275.1043333361
+datafile 6 switched to datafile copy
+input datafile copy RECID=22 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/data_dimfact.281.1043333445
+datafile 7 switched to datafile copy
+input datafile copy RECID=23 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/data_historical.283.1043334171
+datafile 8 switched to datafile copy
+input datafile copy RECID=24 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/data_mprocess.284.1043334171
+datafile 9 switched to datafile copy
+input datafile copy RECID=25 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/data_ps.271.1043333361
+datafile 10 switched to datafile copy
+input datafile copy RECID=26 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/data_rma.279.1043333445
+datafile 11 switched to datafile copy
+input datafile copy RECID=27 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/index_boxi.277.1043333361
+datafile 12 switched to datafile copy
+input datafile copy RECID=28 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/index_data.282.1043333447
+datafile 13 switched to datafile copy
+input datafile copy RECID=29 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/index_dimfact.285.1043334171
+datafile 14 switched to datafile copy
+input datafile copy RECID=30 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/index_mprocess.286.1043334171
+datafile 15 switched to datafile copy
+input datafile copy RECID=31 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/index_rma.280.1043333445
+datafile 16 switched to datafile copy
+input datafile copy RECID=32 STAMP=1043334806 file name=+PRAS_DATA/RMAG/DATAFILE/kc_webstage_data.274.1043333361
+
+contents of Memory Script:
+{
+   set until scn  6965195805;
+   recover
+   clone database
+    delete archivelog
+   ;
+}
+executing Memory Script
+
+executing command: SET until clause
+
+Starting recover at 17-JUN-20
+
+starting media recovery
+
+channel a1: starting archived log restore to default destination
+channel a1: restoring archived log
+archived log thread=1 sequence=7924
+channel a1: restoring archived log
+archived log thread=1 sequence=7925
+channel a1: reading from backup piece /u02/software/RMAG_HOT/RMAG_1043324964_1_12476_1_5sv2vo14.arc
+channel a1: ORA-19870: error while restoring backup piece /u02/software/RMAG_HOT/RMAG_1043324964_1_12476_1_5sv2vo14.arc
+ORA-19504: failed to create file "+FRA"
+ORA-17502: ksfdcre:4 Failed to create file +FRA
+ORA-15001: diskgroup "FRA" does not exist or is not mounted
+ORA-15001: diskgroup "FRA" does not exist or is not mounted
+
+failover to previous backup
+released channel: a1
+released channel: a2
+RMAN-00571: ===========================================================
+RMAN-00569: =============== ERROR MESSAGE STACK FOLLOWS ===============
+RMAN-00571: ===========================================================
+RMAN-03002: failure of Duplicate Db command at 06/17/2020 15:13:30
+RMAN-05501: aborting duplication of target database
+RMAN-03015: error occurred in stored script Memory Script
+RMAN-20506: no backup of archived log found
+RMAN-06053: unable to perform media recovery because of missing log
+RMAN-06025: no backup of archived log for thread 1 with sequence 7925 and starting SCN of 6965195797 found to restore
+RMAN-06025: no backup of archived log for thread 1 with sequence 7924 and starting SCN of 6965194310 found to restore
+
+RMAN> 
+
+Recovery Manager complete.

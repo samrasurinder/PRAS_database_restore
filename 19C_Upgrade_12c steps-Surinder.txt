@@ -1,0 +1,419 @@
+
+*********************************************************************************
+
+Scripts and Logs are here
+-------------------------
+
+/u02/app/oracle/scripts/19CUpgrades
+
+-rwx------. 1 oracle oinstall  537 May  7 12:07 19cupgrd.bash
+-rwxr-xr-x. 1 oracle oinstall 1.4K May  7 12:07 19cPostdsttimestuff.txt
+-rwx------. 1 oracle oinstall  497 May  7 12:07 utl.bash
+-rwx------. 1 oracle oinstall  497 May  7 12:07 datapatch.bash
+
+
+
+[oracle@hrvldevdb7601 19CUpgrades]$ pwd
+/u02/app/oracle/scripts/19CUpgrades
+
+
+All individual upgrades logs are kept respective folders
+---------------------------------------------------------
+
+[oracle@hrvldevdb7601 19CUpgrades]$ ls -altrh
+total 64K
+drwxr-xr-x. 7 oracle oinstall   91 May  7 12:05 ..
+drwxr-xr-x. 2 oracle oinstall    6 May  7 12:05 OPSDEV2
+drwxr-xr-x. 2 oracle oinstall    6 May  7 12:05 DEVPHR
+
+drwxr-xr-x. 2 oracle oinstall 4.0K May  7 12:09 RMANCATD
+drwxr-xr-x. 2 oracle oinstall 4.0K May  7 12:11 OPSDEV1
+drwxr-xr-x. 2 oracle oinstall 4.0K May  7 12:12 OPSDEVS
+[oracle@hrvldevdb7601 19CUpgrades]$
+ ** Crontab :-
+18 14 * * *  /u02/export/EODCPY/upgrd19c.bash
+##SS50 13 * * * /u02/export/EODCPY/dupdb.bash
+
+
+***********************************************************************************
+
+Pre-Upgrade steps:       ( can be run any time)
+------------------
+ * Make sure the SGA size is 6GB or able of the target database.
+1) Set the environment for the database you want to upgrade ( . oraenv)
+
+2) Run Pre-Upgrade tool as shown below ( This your run against the 12C database you're upgrading to 19c)
+
+/u02/app/oracle/product/12.0.2/db_1/jdk/bin/java -jar  /u02/app/oracle/product/19.3.0/db_1/rdbms/admin/preupgrade.jar TERMINAL TEXT > /u02/app/oracle/scripts/19CUpgrades/${ORACLE_SID}/preupgrade_$ORACLE_SID.log
+
+3) Check log file generated in step2  "preupgrade_$ORACLE_SID.log"
+
+4) Look closely for recommendations and execute them on 12C database, if it doesn't require DB to be restarted
+
+5) Don't run preupgrade fix script it generates (Not recommended), Just fix manually
+
+6) Make a note of ( select count(*) from dba_invalid_objects). Plesae make sure no inavlid in SYS/SYSYEM schemas
+
+$ORACLE_HOME/bin/sqlplus / as sysdba | tee /u02/app/oracle/scripts/19cupgrades/${ORACLE_SID}/dba_invalid_objects.log
+
+set lines 200
+col owner for a20
+select owner,object_type,count(object_name) 
+from dba_objects where status !='VALID'
+group by owner,object_type;
+
+select owner,object_type,object_name from dba_objects where status !='VALID' and owner = 'SYS';
+---OR
+set line 200
+col OBJECT_NAME for a65
+set pagesize 99
+select instance_name,host_name from v$instance;
+select OWNER,OBJECT_NAME,OBJECT_TYPE,STATUS from dba_INVALID_objects order by 1,3,2;
+
+
+7)  Make a note of ( select * from dba_registry)
+
+col comp_id format a10
+col comp_name format a30
+col version format a10
+col status format a16
+select substr(comp_id,1,15) comp_id,substr(comp_name,1,30) comp_name,substr(version,1,10) version,status from dba_registry;
+
+
+8)  Generate a init file from spfile ( have a copy in /u02/app/oracle/scripts/19CUpgrades/${ORACLE_SID})
+
+create pfile='/u02/app/oracle/scripts/19cupgrades/$ORACLE_SID/init$ORACLE_SID.ora' from spfile;
+
+9) Put the database in flashback mode and Create guaranteed restore point.
+
+create restore point PREUPGRADE guarantee flashback database;
+
+
+10) Database Links
+
+$ORACLE_HOME/bin/sqlplus / as sysdba | tee /u02/app/oracle/scripts/19CUpgrades/$ORACLE_SID/DB_Links.log
+
+set lines 300;
+col OWNER format a20;
+col DB_LINK format a40
+col USERNAME format a40
+col HOST format a20
+select OWNER,DB_LINK,USERNAME,HOST,CREATED from dba_db_links order by 1;
+
+or 
+set line 200
+set pagesize 999
+col owner for a18
+col DB_LINK for a45
+col USERNAME for a35
+col HOST for a35
+select * from dba_db_links order by owner,db_link;
+
+$ORACLE_HOME/bin/sqlplus / as sysdba | tee /u02/app/oracle/scripts/19CUpgrades/OPSDEV2/Directory_objects
+
+set lines 300
+select directory_name, directory_path from dba_directories;
+
+UPgrade Starts here:
+--------------------
+
+when ready to upgrade:
+---------------------
+
+You're at thim time still  in 11G      
+
+   - Truncate AUD$ table or Move data into some temp table ( optional, but preferred and since it's dev you can safely truncate, for other environments, copy into other temp table later you can insert back into)
+
+   - Remove database from GI registry ( srvctl remove database -d $ORACLE_SID, you need to add it back later once it's upgraded)
+   
+   - Change Oracle Path in /etc/oratab for 12C database to 19C home
+
+   - Copy init file generated  into 19C home
+
+   - put the database in flashback mode using guarenteed restore point ( check flashback destination and size to make sure you've enough space)
+     
+   - make sure it's in flashback mode
+    
+Now, start upgrade process
+--------------------------
+
+   - Shutdown DB gracefully
+
+   - set environment using . oraenv (it just picks up new home path from /etc/oratab)
+
+   - check envrionment variables ( env | grep ORA) ( env | grep LIB) to make sure everything pointing to new 19C
+
+
+   - at sqlplus, issue following command
+     
+     STARTUP UPGRADE;
+ 
+
+    - Once, it's opened, exit from sqlplus
+
+Either crontab or screen the following Job 
+
+/u02/app/oracle/scripts/19CUpgrades/19cupgrd.bash <DBSID>
+
+once it kicked off, monitor logs in /u02/app/oracle/scripts/19CUpgrades/${ORACLE_SID}
+
+and once completes, you should see following file:
+
+upg_summary.log  
+
+
+
+Here is the contents of above job   
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#!/bin/bash
+
+export ORACLE_SID=$1
+export ORACLE_BASE=/u02/app/oracle
+export ORACLE_HOME=/u02/app/oracle/product/19.3.0/db_1
+export LD_LIBRARY_PATH=/u02/app/oracle/product/19.3.0/db_1/lib
+
+export PATH=$ORACLE_HOME/bin:$PATH
+
+$ORACLE_HOME/perl/bin/perl $ORACLE_HOME/rdbms/admin/catctl.pl -n 4 -l /u02/app/oracle/scripts/19CUpgrades/${ORACLE_SID}        $ORACLE_HOME/rdbms/admin/catupgrd.sql
+$ORACLE_HOME/perl/bin/perl $ORACLE_HOME/rdbms/admin/catctl.pl -n 4 -l /u02/app/oracle/scripts/19CUpgrades/${ORACLE_SID}   $ORACLE_HOME/rdbms/admin/catuppst.sql
+
+[oracle@hrvldevdb7601 19CUpgrades]$
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Post-Upgrade Steps:
+-------------------
+
+
+************************* Important   one logon trigger owned by SYSTEM always gets invalid after upgrade, login as SYSTEM and alter triggger <logon trigger name> compile******************************
+
+
+
+Run following:
+
+cd /u02/app/oracle/scripts/19CUpgrades/
+
+- utl.bash <DBSID>
+- datapatch.bash  <DBSID>
+
+
+select count(*) from dba_invalid_objects;
+select * from dba_registry
+******
+-- cat utl.bash
+
+#!/bin/bash
+
+export ORACLE_SID=$1
+export ORACLE_BASE=/u02/app/oracle
+export ORACLE_HOME=/u02/app/oracle/product/19.3.0/db_1
+export LD_LIBRARY_PATH=/u02/app/oracle/product/19.3.0/db_1/lib
+export SPOOL_LOG=/u02/export/EODCPY/${ORACLE_SID}_utl_${ORACLE_SID}.log
+export PATH=$ORACLE_HOME/bin:$PATH
+$ORACLE_HOME/bin/sqlplus / as sysdba  << EOF
+
+spool ${SPOOL_LOG}
+set timing on
+set echo on
+
+select * from global_name;
+select count(*) from dba_invalid_objects;
+select comp_id,version,status from dba_registry;
+@?/rdbms/admin/utlrp;
+select count(*) from dba_invalid_objects;
+select comp_id,version,status from dba_registry;
+
+SPOOL OFF;
+EOF
+***************
+-- cat datapatch.bash
+
+#!/bin/bash
+
+export ORACLE_SID=$1
+export ORACLE_BASE=/u02/app/oracle
+export ORACLE_HOME=/u02/app/oracle/product/19.3.0/db_1
+export LD_LIBRARY_PATH=/u02/app/oracle/product/19.3.0/db_1/lib
+export SPOOL_LOG=/u02/export/EODCPY/${ORACLE_SID}_datapatch_${ORACLE_SID}.log
+export PATH=$ORACLE_HOME/bin:$PATH
+
+cd $ORACLE_HOME/OPatch
+
+
+cd $ORACLE_HOME/OPatch
+
+./datapatch -verbose
+
+*******************************************************
+Change DST Timezone:
+
+Step1 :  shutdown and startup in upgrade mode
+
+===========================================================================================
+-- Check current settings.
+
+SELECT * FROM v$timezone_file;
+
+SHUTDOWN IMMEDIATE;
+STARTUP UPGRADE;
+
+-- Begin upgrade to the latest version.
+SET SERVEROUTPUT ON
+DECLARE
+  l_tz_version PLS_INTEGER;
+BEGIN
+  l_tz_version := DBMS_DST.get_latest_timezone_version;
+
+  DBMS_OUTPUT.put_line('l_tz_version=' || l_tz_version);
+  DBMS_DST.begin_upgrade(l_tz_version);
+END;
+/
+
+=======================================================================================
+Step2
+
+
+SHUTDOWN IMMEDIATE;
+STARTUP;
+
+-- Do the upgrade.
+SET SERVEROUTPUT ON
+DECLARE
+  l_failures   PLS_INTEGER;
+BEGIN
+  DBMS_DST.upgrade_database(l_failures);
+  DBMS_OUTPUT.put_line('DBMS_DST.upgrade_database : l_failures=' || l_failures);
+  DBMS_DST.end_upgrade(l_failures);
+  DBMS_OUTPUT.put_line('DBMS_DST.end_upgrade : l_failures=' || l_failures);
+END;
+/
+
+-- Check new settings.
+SELECT * FROM v$timezone_file;
+
+SQL> SELECT * FROM v$timezone_file;
+
+FILENAME                VERSION     CON_ID
+-------------------- ---------- ----------
+timezlrg_32.dat              32          0
+
+SQL>
+
+
+COLUMN property_name FORMAT A30
+COLUMN property_value FORMAT A20
+
+SELECT property_name, property_value
+FROM   database_properties
+WHERE  property_name LIKE 'DST_%'
+ORDER BY property_name;
+
+PROPERTY_NAME                  PROPERTY_VALUE
+------------------------------ --------------------
+DST_PRIMARY_TT_VERSION         32
+DST_SECONDARY_TT_VERSION       0
+DST_UPGRADE_STATE              NONE
+
+SQL>
+
+================================================================================================
+
+
+
+STEP 3:
+
+sqlplus / as sysdba <<EOF
+EXECUTE DBMS_STATS.GATHER_FIXED_OBJECTS_STATS;
+exit;
+EOF
+
+
+STEP4 
+
+
+sqlplus / as sysdba <<EOF
+@/u02/app/oracle/cfgtoollogs/${ORACLE_SID}/preupgrade/postupgrade_fixups.sql
+
+
+Final Step:
+-----------
+
+add upgraded database to the following text file so that backup script pick it up
+
+[oracle@hrvldevdb7601 backups]$ pwd
+/u02/app/oracle/scripts/backups
+[oracle@hrvldevdb7601 backups]$ cat 19cDBlist.txt
+OPSDEV1
+OPSDEVS
+RMANCATD
+
+
+Run backup script & Gather datbaase stats
+----------------
+
+exec dbms_stats.gather_database_stats;
+
+avamar_backup.bash $ORACLE_SID
+            
+
+srvctl add database -d $ORACLE_SID -o $ORACLE_HOME
+
+
+change compatible parameters to 19.3.0
+alter system set compatible=19.3.0 scope=spfile;
+Bounce the database.
+
+
+Final Step:
+-----------
+
+add upgraded database to the following text file so that backup script pick it up
+
+[oracle@hrvldevdb7601 backups]$ pwd
+/u02/app/oracle/scripts/backups
+[oracle@hrvldevdb7601 backups]$ cat 19cDBlist.txt
+OPSDEV1
+OPSDEVS
+RMANCATD
+
+
+
+
+
+
+Run backup script
+----------------
+
+
+avamar_backup.bash $ORACLE_SID
+
+
+
+*********************************************************************************
+How to Flashback
+----------------
+
+19C Upgrade 
+
+mount db with 19C environment
+-----------------------------
+
+flashback db using whatever restore point
+
+
+
+
+shutdown immediate
+
+set the env 12c
+
+mount it
+alter database open resetlogs
+
+
+
+
+
+
